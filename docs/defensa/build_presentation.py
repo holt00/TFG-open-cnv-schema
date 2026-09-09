@@ -963,22 +963,37 @@ def slide_15_validacion():
     kicker(s, "6 · Formato Open CVN y herramienta")
     title(s, "Parser y validador: un contrato con cinco estados")
 
+    funcs = ["Leer documento", "Validar", "Importar XML", "Importar PDF"]
+    n_f = len(funcs)
+    gap_f = 0.14
+    cw_f = (5.55 - gap_f * (n_f - 1)) / n_f
+    xf = 0.7
+    yf = 1.95
+    for f in funcs:
+        add_rect(s, xf, yf, cw_f, 0.46, fill=CARD_BG2, rounded=True, radius=0.5)
+        add_text(s, xf, yf, cw_f, 0.46, f, size=10, bold=True, color=PRIMARY,
+                  align=PP_ALIGN.CENTER, anchor=MSO_ANCHOR.MIDDLE, line_spacing=0.95)
+        xf += cw_f + gap_f
+    add_text(s, 0.7, yf + 0.50, 5.55, 0.28,
+              "Cuatro funciones públicas del contrato, un mismo tipo de resultado",
+              size=10, italic=True, color=TEXT_MUTED)
+
     states = [("Sin ejecutar", CARD_BG2, TEXT_DARK), ("Válido", SECONDARY, WHITE),
                ("Válido con avisos", ACCENT, WHITE), ("Inválido", RGBColor(0xB0, 0x3A, 0x2E), WHITE),
                ("Fallido", DARK, WHITE)]
-    x, y0, w, h, gap = 0.7, 2.0, 5.55, 0.62, 0.14
+    x, y0, w, h, gap = 0.7, 2.85, 5.55, 0.56, 0.12
     y = y0
     for label, fill, tc in states:
         add_rect(s, x, y, w, h, fill=fill, rounded=True, radius=0.5)
-        add_text(s, x + 0.2, y, w - 0.4, h, label, size=13.5, bold=True, color=tc,
+        add_text(s, x + 0.2, y, w - 0.4, h, label, size=13, bold=True, color=tc,
                   anchor=MSO_ANCHOR.MIDDLE)
         y += h + gap
 
-    add_text(s, x, y + 0.06, w, 1.0,
+    add_text(s, x, y + 0.06, w, 0.9,
               "Un aviso nunca convierte un documento válido en inválido: señala un caso "
               "semánticamente atípico (tipo inconsistente con la sección, referencia sin code "
               "ni label) para que pueda revisarse.",
-              size=11.5, italic=True, color=TEXT_MUTED, line_spacing=1.15)
+              size=11, italic=True, color=TEXT_MUTED, line_spacing=1.15)
 
     add_image_fit(s, os.path.join(FIGS, "open_cvn_import_validation_flow.png"),
                    6.55, 1.9, 6.05, 4.75)
@@ -1002,10 +1017,12 @@ def slide_16_importacion_herramienta():
 
     paths = [
         ("1", "Open CVN JSON", "Caso directo: se analiza y valida sin transformación adicional."),
-        ("2", "CVN XML", "Mapeo semántico parcial y creciente; lo no reconocido se preserva "
-         "como diagnóstico."),
-        ("3", "CVN PDF", "Prioriza el XML embebido; solo si falla, y con autorización "
-         "explícita, recurre a un LLM opcional y trazable."),
+        ("2", "Documento CVN (XML o PDF conforme)", "Incluye el XML directo y un PDF que sigue "
+         "la norma CVN, del que se extrae el XML de forma determinista; solo si esa extracción "
+         "falla se recurre a un LLM como respaldo."),
+        ("3", "PDF no conforme a CVN", "PDF sin estructura XML embebida ni conformidad con la "
+         "norma: al no existir una vía determinista, el documento se procesa íntegramente "
+         "mediante un LLM."),
     ]
     x, y0, w = 0.7, 1.95, 5.55
     y = y0
@@ -1013,9 +1030,10 @@ def slide_16_importacion_herramienta():
         h = 1.28
         add_rect(s, x, y, w, h, fill=WHITE, line_color=LINE_SOFT, line_w=1.1, rounded=True, radius=0.10)
         circle_num(s, x + 0.18, y + 0.18, 0.5, num, fill=PRIMARY)
-        add_text(s, x + 0.86, y + 0.14, w - 1.0, 0.35, name, size=14, bold=True, color=DARK)
-        add_text(s, x + 0.86, y + 0.50, w - 1.0, h - 0.55, desc, size=10.8, color=TEXT_MUTED,
-                  line_spacing=1.1)
+        add_text(s, x + 0.86, y + 0.14, w - 1.0, 0.5, name, size=13, bold=True, color=DARK,
+                  line_spacing=1.0)
+        add_text(s, x + 0.86, y + 0.62, w - 1.0, h - 0.68, desc, size=10.3, color=TEXT_MUTED,
+                  line_spacing=1.08)
         y += h + 0.16
 
     rows = [
